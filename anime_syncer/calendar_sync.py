@@ -45,13 +45,17 @@ def _build_ical(anime: dict) -> tuple[str, str]:
 
 def add_anime(anime: dict) -> str:
     """Create a weekly recurring CalDAV event. Returns the UID."""
+    synced = cfg.load_synced()
+    key = str(anime["id"])
+    if key in synced:
+        raise ValueError(f"Already synced (UID: {synced[key]['uid']}). Remove it first to re-add.")
+
     uid, ical = _build_ical(anime)
     calendar = auth.get_calendar()
     calendar.save_event(ical)
 
     title = anime["title"]["english"] or anime["title"]["romaji"]
-    synced = cfg.load_synced()
-    synced[str(anime["id"])] = {"uid": uid, "title": title}
+    synced[key] = {"uid": uid, "title": title}
     cfg.save_synced(synced)
 
     return uid
