@@ -18,7 +18,9 @@ def load_config() -> dict:
 
 def save_config(data: dict):
     _ensure_dir()
+    _CONFIG_DIR.chmod(0o700)
     CONFIG_FILE.write_text(json.dumps(data, indent=2))
+    CONFIG_FILE.chmod(0o600)
 
 
 def load_synced() -> dict:
@@ -29,4 +31,6 @@ def load_synced() -> dict:
 
 def save_synced(data: dict):
     _ensure_dir()
+    _CONFIG_DIR.chmod(0o700)
     SYNCED_FILE.write_text(json.dumps(data, indent=2))
+    SYNCED_FILE.chmod(0o600)
